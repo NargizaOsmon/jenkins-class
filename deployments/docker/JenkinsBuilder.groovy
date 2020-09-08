@@ -43,6 +43,10 @@ def slavePodTemplate = """
             checkout scm 
         }
         dir('deployments/docker') {
+            stage("Docker build") {
+                sh 'docker build -t artemis .'
+            }
+            
             stage('checking') {
                 sh 'ls -l'
             }

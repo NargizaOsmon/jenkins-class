@@ -1,7 +1,7 @@
 // Uniq name for the pod or slave 
 def k8slabel = "jenkins-pipeline-${UUID.randomUUID().toString()}"
 
-## Creating yaml definition for slaves
+// Creating yaml definition for slaves
 def slavePodTemplate = """
       metadata:
         labels:

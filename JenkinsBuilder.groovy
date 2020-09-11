@@ -3,6 +3,8 @@ def k8slabel = "jenkins-pipeline-${UUID.randomUUID().toString()}"
 def branch = "${scm.branches[0].name}".replaceAll(/^\*\//, '')
 def gitCommitHash = ""
 def  environment = ""
+def  environment = ""
+def  environment = ""
 if (branch == "master") {
   println("The application will be deployed to stage environment!")
   environment = "stage"
@@ -14,10 +16,9 @@ if (branch == "master") {
   environment = "qa"
 } else {
   println('Please use proper name for your branch!')
-  currentBuild.result = 'FAILURE'
-  println("ERROR Detected:")
+  currentBuild.result = 'FAILURE'	      
+  error('Please use proper name for your branch!')
 }
-
 properties([
     [$class: 'RebuildSettings', autoRebuild: false, rebuildDisabled: false], 
     parameters([

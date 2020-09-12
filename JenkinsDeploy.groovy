@@ -83,8 +83,8 @@ def slavePodTemplate = """
         }
 
         stage("Destroy") {
-            if (!applyChanges) {
-                if (destroyChanges) {
+            if (!params.applyChanges) {
+                if (params.destroyChanges) {
                     println("Destroying everything")
                 } 
             } else {
@@ -93,4 +93,3 @@ def slavePodTemplate = """
         }
         }
       }
-    }

@@ -39,14 +39,6 @@ def slavePodTemplate = """
                   - jenkins-jenkins-master
               topologyKey: "kubernetes.io/hostname"
         containers:
-
-        - name: terraform
-          image: hashicorp/terraform:0.12.27
-          imagePullPolicy: IfNotPresent
-          command:
-          - cat
-          tty: true
-
         - name: fuchicorptools
           image: fuchicorp/buildtools
           imagePullPolicy: Always
@@ -64,32 +56,32 @@ def slavePodTemplate = """
               path: /var/run/docker.sock
     """
     podTemplate(name: k8slabel, label: k8slabel, yaml: slavePodTemplate, showRawYaml: false) {
-      node(k8slabel) {
-
-        stage("Pull the SCM") {
-            git 'https://github.com/NargizaOsmon/jenkins-class.git'
-        }
-
-        stage("Apply/Plan") {
+        node(k8slabel) {
             container("fuchicorptools") {
-                if (!params.destroyChanges) {
-                    if (params.applyChanges) { 
-                        println("Applying the changes!")
-                    } else {
-                        println("Planning the changes")
+                stage("Pull the SCM") {
+                    git 'https://github.com/fsadykov/jenkins-class'
+                }
+                dir('deployments/k8s') {
+                    stage("Apply/Plan") {
+                        if (!params.destroyChanges) {
+                            if (params.applyChanges) {
+                                println("Applying the changes!")
+                            } else {
+                                println("Planing the changes")
+                            }
+                        }
+                    }
+                    stage("Destroy") {
+                        if (!params.applyChanges) {
+                            if (params.destroyChanges) {
+                                println("Destroying everything")
+                            } 
+                        } else {
+                            println("Sorry I can not destroy and apply!!")
+                        }
                     }
                 }
             }
-        }
-
-        stage("Destroy") {
-            if (!params.applyChanges) {
-                if (params.destroyChanges) {
-                    println("Destroying everything")
-                } 
-            } else {
-                println("Sorry I can not destroy and apply!")
-            }
-        }
-        }
       }
+    }
+
